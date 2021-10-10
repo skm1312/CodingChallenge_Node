@@ -28,6 +28,25 @@ app.get("/:make/:model/:color/:size", function (request, response) {
   let sizeAvailCol = makeModelColorwaySize(request.params);
   response.send(sizeAvailCol);
 });
+app.get("/:make", function (request, response) {
+  let makeAvail = makeFunction(request.params);
+  response.send(makeAvail);
+});
+//This is the function that handles the endpoint where only one param is present
+function makeFunction(values) {
+  let params = new URLSearchParams(values);
+  let makeval = params.get("make");
+  let modelObject = data[makeval];
+  for (const key in data) {
+    if (key === makeval) {
+      //Returning only the key values under the param object
+      let respval = Object.keys(modelObject);
+      return respval;
+    }
+  }
+  //did not find the key after parsing through the entire object.
+  return ERROR_CODE + ": Product Not found";
+}
 
 //This is the function that handles the endpoint where we have 2 or 3 params
 function makeModelSize(values) {
@@ -77,6 +96,7 @@ function makeModelSize(values) {
       }
     }
   }
+  return ERROR_CODE + " : Not Found";
 }
 //This is the function that handles the endpoint where we have 4 params
 function makeModelColorwaySize(values) {
@@ -110,6 +130,7 @@ function makeModelColorwaySize(values) {
       }
     }
   }
+  return ERROR_CODE + " : Not Found";
 }
 
 //Start the server and make it listen for connections on port 8080
